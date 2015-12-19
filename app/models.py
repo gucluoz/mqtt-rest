@@ -2,10 +2,10 @@ from . import db
 
 class Temprature(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  m1 = db.Column(db.String)
-  m2 = db.Column(db.String)
-  m3 = db.Column(db.String)
-  m4 = db.Column(db.String)
+  m1 = db.Column(db.String(100))
+  m2 = db.Column(db.String(100))
+  m3 = db.Column(db.String(100))
+  m4 = db.Column(db.String(100))
   timestamp = db.Column(db.DateTime)
   value = db.Column(db.Float)
 
