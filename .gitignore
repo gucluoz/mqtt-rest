@@ -4,3 +4,4 @@ venv/
 nginx.conf
 uwsgi.ini
 uwsgi_params
+*.sqlite
