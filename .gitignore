@@ -1,7 +1,4 @@
 .DS_Store
 *.pyc
 venv/
-nginx.conf
-uwsgi.ini
-uwsgi_params
 *.sqlite
