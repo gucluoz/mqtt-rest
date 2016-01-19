@@ -38,13 +38,15 @@ class User(db.Model):
     return self.username
 
   def to_json(self):
-    result = '"username": "{}", '.format(self.username if None != self.username else '')
-    result += '"password": "{}", '.format(self.password if None != self.password else '')
-    result += '"assets": {%s}' % ','.join(map(lambda x:(x.to_json()),self.assets))
+    result = '{'
+    result += u'"username": "{}", '.format(self.username if None != self.username else '')
+    result += u'"password": "{}", '.format(self.password if None != self.password else '')
+    result += u'"assets": [%s]' % ','.join(map(lambda x:(x.to_json()),self.assets))
+    result += '}'
     return result
 
   def get_assets(self):
-    return '"assets": {%s}' % ','.join(map(lambda x:(x.to_json()),self.assets))
+    return u'{"assets": [%s]}' % ','.join(map(lambda x:(x.to_json()),self.assets))
 
 class Asset(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -58,14 +60,16 @@ class Asset(db.Model):
     return self.name
 
   def to_json(self):
-    result = '"name": "{}", '.format(self.name if None != self.name else '')
-    result += '"identifier": "{}", '.format(self.identifier if None != self.identifier else '')
-    result += '"address": "{}", '.format(self.address if None != self.address else '')
-    result += '"buildingItems": {%s}' % ','.join(map(lambda x:(x.to_json()),self.buildingItems))
+    result = '{'
+    result += u'"name": "{}", '.format(self.name if None != self.name else '')
+    result += u'"identifier": "{}", '.format(self.identifier if None != self.identifier else '')
+    result += u'"address": "{}", '.format(self.address if None != self.address else '')
+    result += u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json()),self.buildingItems))
+    result += '}'
     return result
 
   def get_building_items(self):
-    return '"buildingItems": {%s}' % ','.join(map(lambda x:(x.to_json()),self.buildingItems))
+    return u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json()),self.buildingItems))
 
 class BuildingItem(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -78,13 +82,15 @@ class BuildingItem(db.Model):
     return self.name
 
   def to_json(self):
-    result = '"name": "{}", '.format(self.name if None != self.name else '')
-    result += '"identifier": "{}", '.format(self.identifier if None != self.identifier else '')
-    result += '"sensors": {%s}' % ','.join(map(lambda x:(x.to_json()),self.sensors))
+    result = '{'
+    result += u'"name": "{}", '.format(self.name if None != self.name else u'')
+    result += u'"identifier": "{}", '.format(self.identifier if None != self.identifier else u'')
+    result += u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json()),self.sensors))
+    result += '}'
     return result
 
   def get_sensors(self):
-    return '"sensors": {%s}' % ','.join(map(lambda x:(x.to_json()),self.sensors))
+    return u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json()),self.sensors))
 
 class Sensor(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -96,6 +102,8 @@ class Sensor(db.Model):
     return self.name
 
   def to_json(self):
-    result = '"name": "{}", '.format(self.name if None != self.name else '')
-    result += '"identifier": "{}"'.format(self.identifier if None != self.identifier else '')
+    result = '{'
+    result += u'"name": "{}", '.format(self.name if None != self.name else u'')
+    result += u'"identifier": "{}"'.format(self.identifier if None != self.identifier else u'')
+    result += '}'
     return result
