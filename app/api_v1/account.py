@@ -1,6 +1,6 @@
 from . import api
 from flask import jsonify
-from ..models import User, Asset
+from ..models import User, Asset, BuildingItem, Sensor
 from .. import db
 from functools import wraps
 from flask import request, Response
@@ -41,3 +41,17 @@ def getAssets():
 @requires_auth
 def heartBeat():
   return jsonify(authenticated=1)
+
+@api.route('/getSensorValues')
+@requires_auth
+def get_sensor_values():
+  try:
+    buildingItemId = int(request.args.get('id'))
+    user = User.query.filter(User.username == request.authorization.username).first()
+    for a in user.assets:
+      for b in a.buildingItems:
+        if b.id == buildingItemId:
+          return BuildingItem.query.get(buildingItemId).get_sensors(hasValues=1)
+    return 'not authorized', 404
+  except:
+    return 'id required',401

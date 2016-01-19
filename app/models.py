@@ -33,7 +33,7 @@ class User(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(60))
   password = db.Column(db.String(32))
-  assets = db.relationship('Asset', backref='user', lazy='dynamic')
+  assets = db.relationship('Asset', backref='user', lazy='joined')
 
   def __repr__(self):
     return self.username
@@ -54,7 +54,7 @@ class Asset(db.Model):
   identifier = db.Column(db.String(100))
   name = db.Column(db.String(100))
   address = db.Column(db.String(300))
-  buildingItems = db.relationship('BuildingItem', backref='asset', lazy='dynamic')
+  buildingItems = db.relationship('BuildingItem', backref='asset', lazy='joined')
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
   def __repr__(self):
@@ -70,13 +70,13 @@ class Asset(db.Model):
     return result
 
   def get_building_items(self, hasValues=None):
-    return u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.buildingItems))
+    return u'{"buildingItems": [%s]}' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.buildingItems))
 
 class BuildingItem(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   identifier = db.Column(db.String(100))
   name = db.Column(db.String(100))
-  sensors = db.relationship('Sensor', backref='buildingItem', lazy='dynamic')
+  sensors = db.relationship('Sensor', backref='buildingItem', lazy='joined')
   asset_id = db.Column(db.Integer, db.ForeignKey('asset.id'))
 
   def __repr__(self):
@@ -86,12 +86,13 @@ class BuildingItem(db.Model):
     result = '{'
     result += u'"name": "{}", '.format(self.name if None != self.name else u'')
     result += u'"identifier": "{}", '.format(self.identifier if None != self.identifier else u'')
+    result += u'"id": {}, '.format(self.id if None != self.id else u'')
     result += u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.sensors))
     result += '}'
     return result
 
   def get_sensors(self, hasValues=None):
-    return u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.sensors))
+    return u'{"sensors": [%s]}' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.sensors))
 
 class Sensor(db.Model):
   id = db.Column(db.Integer, primary_key=True)
