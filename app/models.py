@@ -1,4 +1,5 @@
 from . import db
+from sqlalchemy import desc
 
 class Temprature(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -37,16 +38,16 @@ class User(db.Model):
   def __repr__(self):
     return self.username
 
-  def to_json(self):
+  def to_json(self, hasValues=None):
     result = '{'
     result += u'"username": "{}", '.format(self.username if None != self.username else '')
     result += u'"password": "{}", '.format(self.password if None != self.password else '')
-    result += u'"assets": [%s]' % ','.join(map(lambda x:(x.to_json()),self.assets))
+    result += u'"assets": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.assets))
     result += '}'
     return result
 
-  def get_assets(self):
-    return u'{"assets": [%s]}' % ','.join(map(lambda x:(x.to_json()),self.assets))
+  def get_assets(self, hasValues=None):
+    return u'{"assets": [%s]}' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.assets))
 
 class Asset(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -59,17 +60,17 @@ class Asset(db.Model):
   def __repr__(self):
     return self.name
 
-  def to_json(self):
+  def to_json(self, hasValues=None):
     result = '{'
     result += u'"name": "{}", '.format(self.name if None != self.name else '')
     result += u'"identifier": "{}", '.format(self.identifier if None != self.identifier else '')
     result += u'"address": "{}", '.format(self.address if None != self.address else '')
-    result += u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json()),self.buildingItems))
+    result += u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.buildingItems))
     result += '}'
     return result
 
-  def get_building_items(self):
-    return u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json()),self.buildingItems))
+  def get_building_items(self, hasValues=None):
+    return u'"buildingItems": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.buildingItems))
 
 class BuildingItem(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -81,16 +82,16 @@ class BuildingItem(db.Model):
   def __repr__(self):
     return self.name
 
-  def to_json(self):
+  def to_json(self, hasValues=None):
     result = '{'
     result += u'"name": "{}", '.format(self.name if None != self.name else u'')
     result += u'"identifier": "{}", '.format(self.identifier if None != self.identifier else u'')
-    result += u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json()),self.sensors))
+    result += u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.sensors))
     result += '}'
     return result
 
-  def get_sensors(self):
-    return u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json()),self.sensors))
+  def get_sensors(self, hasValues=None):
+    return u'"sensors": [%s]' % ','.join(map(lambda x:(x.to_json(hasValues=hasValues)),self.sensors))
 
 class Sensor(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -101,9 +102,15 @@ class Sensor(db.Model):
   def __repr__(self):
     return self.name
 
-  def to_json(self):
+  def to_json(self, hasValues=None):
     result = '{'
     result += u'"name": "{}", '.format(self.name if None != self.name else u'')
     result += u'"identifier": "{}"'.format(self.identifier if None != self.identifier else u'')
+    if hasValues:
+      latestValue = Temprature.query.filter_by(m1 = self.buildingItem.asset.user.username,
+       m2 = self.buildingItem.asset.identifier,
+       m3 = self.buildingItem.identifier,
+       m4 = self.identifier).order_by(desc(Temprature.timestamp)).first()
+      result += u',"value": {} '.format(latestValue.value if None != latestValue else u'0')
     result += '}'
     return result

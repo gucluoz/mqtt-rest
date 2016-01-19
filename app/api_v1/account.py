@@ -29,8 +29,13 @@ def requires_auth(f):
 @api.route('/getAssets')
 @requires_auth
 def getAssets():
+  hasValues = ''
+  try:
+    hasValues = request.args.get('values')
+  except:
+    pass
   user = User.query.filter(User.username == request.authorization.username).first()
-  return user.get_assets()
+  return user.get_assets(hasValues = hasValues)
 
 @api.route('/heartBeat')
 @requires_auth
