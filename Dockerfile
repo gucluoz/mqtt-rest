@@ -11,7 +11,7 @@ RUN chown www-data /var/log/uwsgi
 RUN chgrp www-data /var/log/uwsgi
 RUN mkdir -p /var/www
 RUN rm -rf /var/www/*
-RUN git clone https://github.com/gucluoz/mqtt-rest /var/www/mqtt-rest
+RUN git clone -b prod https://github.com/gucluoz/mqtt-rest /var/www/mqtt-rest
 RUN pip install -r /var/www/mqtt-rest/requirements.txt
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
