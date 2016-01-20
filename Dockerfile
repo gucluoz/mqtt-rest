@@ -4,6 +4,8 @@ maintainer gucluozturk <gucluozturk@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN sudo apt-get install libmysqlclient-dev
+RUN sudo apt-get install python-dev
 RUN mkdir -p /var/log/uwsgi
 RUN chown www-data /var/log/uwsgi
 RUN chgrp www-data /var/log/uwsgi
